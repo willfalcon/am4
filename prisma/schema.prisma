@@ -1,0 +1,185 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+ 
+generator client {
+  provider = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
+}
+
+model User {
+  id            String          @id @default(cuid())
+  name          String?
+  email         String          @unique
+  emailVerified DateTime?
+  image         String?
+  accounts      Account[]
+  sessions      Session[]
+  // Optional for WebAuthn support
+  Authenticator Authenticator[]
+  role          String @default("USER")
+
+ 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+ 
+model Account {
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+ 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+ 
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+ 
+  @@id([provider, providerAccountId])
+}
+ 
+model Session {
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+ 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+ 
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+ 
+  @@id([identifier, token])
+}
+ 
+// Optional for WebAuthn support
+model Authenticator {
+  credentialID         String  @unique
+  userId               String
+  providerAccountId    String
+  credentialPublicKey  String
+  counter              Int
+  credentialDeviceType String
+  credentialBackedUp   Boolean
+  transports           String?
+ 
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+ 
+  @@id([userId, credentialID])
+}
+
+
+model Model {
+  id           String       @id @default(cuid())
+  name         String
+  makeId       String
+  make         Manufacturer @relation(fields: [makeId], references: [id])
+  price        Int
+  discontinued Boolean?
+  speed        Int
+  pax          Int
+  runway       Int
+  checkCost    Int
+  range        Int
+  fuel         Float
+  co2          Float
+  checkTime    Int
+  comps        CompModel[]
+  planes       Plane[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Manufacturer {
+  id   String @id @default(cuid())
+  name String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  models     Model[]
+  lines      String[]
+}
+
+model Plane {
+  id              String   @id @default(cuid())
+  name            String
+  modelId         String
+  model           Model    @relation(fields: [modelId], references: [id])
+  routeId         String
+  route           Route    @relation(fields: [routeId], references: [id])
+  correctedSplits Boolean
+  y               Int
+  j               Int
+  f               Int
+  yPrice          Int
+  jPrice          Int
+  fPrice          Int
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model Airport {
+  id        String  @id @default(cuid())
+  name      String
+  code      String
+  country   String
+  city      String
+  runway    Int
+  market    Int
+  routes    Route[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  hub       Hub?
+}
+
+model Hub {
+  id        String   @id @default(cuid())
+  name      String
+  routes    Route[]
+  airportId String   @unique
+  airport   Airport  @relation(fields: [airportId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Route {
+  id            String      @id @default(cuid())
+  name          String
+  hubId         String
+  hub           Hub         @relation(fields: [hubId], references: [id])
+  destinationId String
+  destination   Airport     @relation(fields: [destinationId], references: [id])
+  expires       DateTime
+  distance      Int
+  yDemand       Int
+  jDemand       Int
+  fDemand       Int
+  planes        Plane[]
+  compModels    CompModel[]
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+}
+
+model CompModel {
+  route      Route    @relation(fields: [routeId], references: [id])
+  routeId    String
+  model      Model    @relation(fields: [modelId], references: [id])
+  modelId    String
+  assignedAt DateTime @default(now())
+  assignedBy String
+
+  @@id([routeId, modelId])
+}

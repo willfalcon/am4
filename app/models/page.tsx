@@ -1,13 +1,15 @@
+import { redirect } from 'next/navigation';
+
 import { auth } from '@/auth';
+import { getManufacturers, getModels } from '@/lib/queries';
 
 import Title from '@/components/Title';
-import { redirect } from 'next/navigation';
-import NewModelForm from './NewModelForm';
-import { columns } from './columns';
-import { getManufacturers, getModels } from '@/lib/queries';
 import Heading from '@/components/Heading';
-import { ModelsTable } from './ModelsTable';
-import ModelsContextProvider from './ModelsContextProvider';
+import ModelsContextProvider from '../../components/models/ModelsContextProvider';
+import { columns } from '@/components/models/columns';
+import NewModelForm from '@/components/models/NewModelForm';
+
+import DataTable from '@/components/DataTable';
 
 export default async function Models() {
   const session = await auth();
@@ -18,13 +20,12 @@ export default async function Models() {
 
   const models = await getModels();
   const manufacturers = await getManufacturers();
-
+  
   return (
     <div className="container mx-auto max-w-full py-10">
       <Title>Models</Title>
         <ModelsContextProvider manufacturers={manufacturers}>
-          <ModelsTable columns={columns} data={models} />
-          <Heading>Add Model</Heading>
+          <DataTable columns={columns} data={models} />
           <NewModelForm manufacturers={manufacturers} />
         </ModelsContextProvider>
     </div>

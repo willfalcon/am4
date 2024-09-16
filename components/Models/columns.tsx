@@ -1,14 +1,14 @@
 'use client';
 
 import { ColumnDef } from '@tanstack/react-table';
-import { Manufacturer, Model} from '@prisma/client';
+import { Model} from '@prisma/client';
+import { ArrowUpDown, Check } from 'lucide-react';
+
+import { cn } from '@/lib/utils';
 
 import { Button } from '@/components/ui/button';
-import { ArrowUpDown, Check, MoreHorizontal } from 'lucide-react';
-
 import ActionCell from './ActionCell';
-import { useState } from 'react';
-import { cn } from '@/lib/utils';
+
 
 function getCurrency(float: string) {
   const amount = parseFloat(float);
@@ -44,6 +44,17 @@ export const columns: ColumnDef<Model>[] = [
     cell: ({row}) => {
       const make: {name: string} = row.getValue('make');
       return make.name;
+    }
+  },
+  {
+    accessorKey: 'line',
+    header: ({ column }) => {
+      return (
+        <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+          Line
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
     }
   },
   {

@@ -3,7 +3,7 @@
 import { ColumnDef } from '@tanstack/react-table';
 import { Airport } from '@prisma/client';
 
-export const columns: ColumnDef<Airport>[] = [
+export const airportColumns: ColumnDef<Airport>[] = [
   {
     accessorKey: 'code',
     header: 'Code',

@@ -1,4 +1,4 @@
-import ManufacturerCard from "@/components/Manufacturers/ManufacturerCard";
+import ManufacturerCard from "@/components/manufacturers/ManufacturerCard";
 import { getManufacturers } from "@/lib/queries"
 
 export default async function ManufacturersList() {

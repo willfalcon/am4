@@ -1,6 +1,6 @@
 import Title from "@/components/Title";
 import ManufacturersList from "./ManufacturersList";
-import NewManufacturerForm from "./NewManufacturerForm";
+import NewManufacturerForm from "@/components/manufacturers/NewManufacturerForm";
 
 export default function Manufacturers() {
   return (

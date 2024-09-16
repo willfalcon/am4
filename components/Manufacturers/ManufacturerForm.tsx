@@ -6,6 +6,7 @@ import { UseFieldArrayReturn, UseFormReturn } from "react-hook-form";
 import { z } from "zod";
 import { ManufacturerSchema } from "@/lib/zodSchemas";
 import { cn } from "@/lib/utils";
+import TextInput from "../forms/TextInput";
 
 type FormData = z.infer<typeof ManufacturerSchema>;
 
@@ -20,27 +21,16 @@ export default function ManufacturerForm({form, onSubmit, fieldArray, submit}: P
   console.log(form.getValues())
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2 mb-4">
-        <FormField
-          control={form.control}
-          name="name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Name</FormLabel>
-              <FormControl>
-                <Input {...field} />
-              </FormControl>
-            </FormItem>
-          )}
-        />
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2 grid grid-cols-[150px_1fr]">
+        <FormField control={form.control} name="name" render={({ field }) => <TextInput {...field} label="Name" />} />
         {fieldArray.fields.map((field, index) => (
           <FormField
             control={form.control}
             key={field.id}
             name={`lines.${index}.value`}
             render={({ field }) => (
-              <FormItem>
-                <FormLabel className={cn(index !== 0 && 'sr-only')}>Lines</FormLabel>
+              <FormItem className="space-y-0 grid grid-cols-[150px_1fr] items-center gap-x-2 col-span-2">
+                <FormLabel className={cn(index !== 0 && 'sr-only', 'text-right')}>Lines</FormLabel>
                 <FormControl>
                   <Input {...field} />
                 </FormControl>
@@ -49,11 +39,20 @@ export default function ManufacturerForm({form, onSubmit, fieldArray, submit}: P
             )}
           />
         ))}
-        <Button type="button" variant="secondary" size="icon" className="mt-2 rounded-full w-7 h-7" onClick={() => fieldArray.append({ value: '' })}>
+        <Button
+          type="button"
+          variant="secondary"
+          size="icon"
+          className="mt-2 rounded-full w-7 h-7 col-start-2"
+          onClick={() => fieldArray.append({ value: '' })}
+          aria-label="Add Line"
+        >
           <Plus className="w-4 h-4" />
         </Button>
         <br />
-        <Button type="submit">{submit} Manufacturer</Button>
+        <Button type="submit" className="col-start-2 justify-self-start ml-2">
+          {submit} Manufacturer
+        </Button>
       </form>
     </Form>
   );

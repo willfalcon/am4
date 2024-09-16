@@ -4,11 +4,12 @@ import { ManufacturerSchema } from "@/lib/zodSchemas"
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { z } from "zod"
-import { createManufacturer } from "./actions";
+
 import { useFieldArray, useForm } from "react-hook-form";
 
-import ManufacturerForm from "@/components/Manufacturers/ManufacturerForm";
+import ManufacturerForm from "@/components/manufacturers/ManufacturerForm";
 import Heading from "@/components/Heading";
+import { createManufacturer } from "@/app/manufacturers/actions";
 
 type FormData = z.infer<typeof ManufacturerSchema>;
 
@@ -40,7 +41,7 @@ export default function NewManufacturerForm() {
 
   return (
     <div className="mt-8">
-      <Heading>Add New Manufacturer</Heading>
+      <Heading className="relative left-[150px] mx-2">Add New Manufacturer</Heading>
       <ManufacturerForm form={form} fieldArray={fieldArray} onSubmit={onSubmit} submit="Add" />
     </div>
   );

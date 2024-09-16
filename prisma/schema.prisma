@@ -19,8 +19,9 @@ model User {
   // Optional for WebAuthn support
   Authenticator Authenticator[]
   role          String @default("USER")
-
- 
+  planes        Plane[]
+  routes        Route[]
+  hubs          Hub[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -85,7 +86,8 @@ model Model {
   id           String       @id @default(cuid())
   name         String
   makeId       String
-  make         Manufacturer @relation(fields: [makeId], references: [id])
+  make         Manufacturer? @relation(fields: [makeId], references: [id])
+  line         String?
   price        Int
   discontinued Boolean?
   speed        Int
@@ -116,17 +118,19 @@ model Manufacturer {
 model Plane {
   id              String   @id @default(cuid())
   name            String
-  modelId         String
-  model           Model    @relation(fields: [modelId], references: [id])
-  routeId         String
-  route           Route    @relation(fields: [routeId], references: [id])
-  correctedSplits Boolean
-  y               Int
-  j               Int
-  f               Int
-  yPrice          Int
-  jPrice          Int
-  fPrice          Int
+  modelId         String?
+  model           Model?    @relation(fields: [modelId], references: [id])
+  routeId         String?
+  route           Route?    @relation(fields: [routeId], references: [id])
+  correctedSplits Boolean?
+  y               Int?
+  j               Int?
+  f               Int?
+  yPrice          Int?
+  jPrice          Int?
+  fPrice          Int?
+  userId          String
+  user            User @relation(fields: [userId], references: [id])
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 }
@@ -151,6 +155,8 @@ model Hub {
   routes    Route[]
   airportId String   @unique
   airport   Airport  @relation(fields: [airportId], references: [id])
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -160,15 +166,17 @@ model Route {
   name          String
   hubId         String
   hub           Hub         @relation(fields: [hubId], references: [id])
-  destinationId String
-  destination   Airport     @relation(fields: [destinationId], references: [id])
-  expires       DateTime
+  destinationId String?
+  destination   Airport?     @relation(fields: [destinationId], references: [id])
+  expires       DateTime?
   distance      Int
   yDemand       Int
   jDemand       Int
   fDemand       Int
   planes        Plane[]
   compModels    CompModel[]
+  userId        String
+  user          User        @relation(fields: [userId], references: [id])
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
 }

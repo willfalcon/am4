@@ -157,6 +157,7 @@ model Hub {
   airport   Airport  @relation(fields: [airportId], references: [id])
   userId    String
   user      User     @relation(fields: [userId], references: [id])
+  eventHub  Boolean?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -168,6 +169,7 @@ model Route {
   hub           Hub         @relation(fields: [hubId], references: [id])
   destinationId String?
   destination   Airport?     @relation(fields: [destinationId], references: [id])
+  event         Boolean?
   expires       DateTime?
   distance      Int
   yDemand       Int

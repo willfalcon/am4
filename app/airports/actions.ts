@@ -12,12 +12,24 @@ type CreateAirportInput = Prisma.AirportCreateInput;
 
 export async function createAirport(data: z.infer<typeof AirportSchema>) {
   const validatedData = AirportSchema.parse(data);
-
+  const existing = await prisma.airport.findFirst({
+    where: {
+      code: validatedData.code
+    }
+  });
+  if (existing) {
+    return {
+      success: false, 
+      error: 'Airport already exists',
+      airport: existing
+    }
+  }
   try {
     const newAirport = await prisma.airport.create({ data: validatedData as CreateAirportInput });
     revalidateTag(airportsTag);
     return {
       success: true,
+      error: null,
       airport: newAirport,
     };
   } catch (err) {
@@ -25,6 +37,7 @@ export async function createAirport(data: z.infer<typeof AirportSchema>) {
     return {
       success: false,
       error: 'Failed to create airport.',
+      airport: null
     };
   }
 

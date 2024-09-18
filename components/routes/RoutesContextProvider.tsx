@@ -12,6 +12,6 @@ export default function RoutesContextProvider({ airports, hubs, children }: Cont
   return <RoutesContext.Provider value={{ airports, hubs }}>{children}</RoutesContext.Provider>;
 }
 
-const RoutesContext = createContext<ContextType>({ airports: [], hubs: [] });
+const RoutesContext = createContext<ContextType>({ airports: [], hubs: [], });
 
 export const useRoutesContext = () => useContext(RoutesContext);

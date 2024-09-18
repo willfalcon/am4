@@ -72,6 +72,11 @@ export const getRoutes = cache(async () => {
           id: session.user.id,
         },
       },
+      event: {
+        not: {
+          equals: true
+        }
+      }
     },
     include: {
       planes: true,
@@ -85,6 +90,40 @@ export const getRoutes = cache(async () => {
     error: false,
     message: '',
     routes,
+  };
+
+});
+export const getEvents = cache(async () => {
+  const session = await auth();
+  if (!session?.user) {
+    return {
+      error: 'Not logged in',
+      message: 'You must be logged in to do this.',
+      events: [],
+    };
+  }
+
+  const events = await prisma.route.findMany({
+    where: {
+      user: {
+        is: {
+          id: session.user.id,
+        },
+      },
+      event: true
+    },
+    include: {
+      planes: true,
+      hub: true,
+      destination: true
+    }
+  });
+
+
+  return {
+    error: false,
+    message: '',
+    events,
   };
 
 });
@@ -106,6 +145,39 @@ export const getHubs = cache(async () => {
           id: session.user.id,
         },
       },
+    },
+    include: {
+      airport: true
+    },
+  });
+
+  return {
+    error: false,
+    message: '',
+    hubs,
+  };
+});
+
+export const getEventHubs = cache(async () => {
+  const session = await auth();
+  if (!session?.user) {
+    return {
+      error: 'Not logged in',
+      message: 'You must be logged in to do this.',
+      hubs: [],
+    };
+  }
+
+  const hubs = await prisma.hub.findMany({
+    where: {
+      user: {
+        is: {
+          id: session.user.id,
+        },
+      },
+      eventHub: {
+        equals: true
+      }
     },
     include: {
       airport: true

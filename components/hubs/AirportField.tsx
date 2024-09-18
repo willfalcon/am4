@@ -9,10 +9,11 @@ import { useFormContext } from 'react-hook-form';
 import { useHubsContext } from './HubsContextProvider';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '../ui/dialog';
 import NewAirportForm from '../airports/NewAirportForm';
+import { useAirportsContext } from '../airports/AirportsProvider';
 
 export default function AirportField() {
   const form = useFormContext();
-  const { airports } = useHubsContext();
+  const { airports } = useAirportsContext();
 
   const [open, setOpen] = useState(false);
 
@@ -41,24 +42,12 @@ export default function AirportField() {
                 <CommandInput placeholder="Search manufacturers" />
                 <CommandList>
                   <CommandEmpty>
-                    <>
-                      <p className='mb-2'>No airports found</p>
-                      <Dialog>
-                        <DialogTrigger asChild>
-                          <Button>Add Airport</Button>
-                        </DialogTrigger>
-                        <DialogContent>
-                          <DialogHeader>
-                            <DialogTitle>New Airport</DialogTitle>
-                          </DialogHeader>
-                          <NewAirportForm />
-                        </DialogContent>
-                      </Dialog>
-                    </>
+                    <p className="mb-2">No airports found</p>
                   </CommandEmpty>
                   <CommandGroup>
                     {airports.map(airport => (
                       <CommandItem
+                        keywords={[airport.code]}
                         value={airport.name}
                         key={airport.id}
                         onSelect={() => {
@@ -66,11 +55,24 @@ export default function AirportField() {
                           setOpen(false);
                         }}
                       >
-                        <Check className={cn('mr-2 h-4 w-4', airport.name === field.value?.name ? 'opacity-100' : 'opacity-0')} />
+                        <Check className={cn('mr-2 h-4 w-4 flex-shrink-0', airport.name === field.value?.name ? 'opacity-100' : 'opacity-0')} />
                         {airport.name}
                       </CommandItem>
                     ))}
                   </CommandGroup>
+                  <div className="px-3 pt-1 pb-6 flex justify-center">
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <Button>Add Airport</Button>
+                      </DialogTrigger>
+                      <DialogContent>
+                        <DialogHeader>
+                          <DialogTitle>New Airport</DialogTitle>
+                        </DialogHeader>
+                        <NewAirportForm />
+                      </DialogContent>
+                    </Dialog>
+                  </div>
                 </CommandList>
               </Command>
             </PopoverContent>

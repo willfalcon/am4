@@ -14,7 +14,6 @@ export default function CountryField() {
 
   const [open, setOpen] = useState(false);
 
-  console.log(countries)
   return (
     <FormField
       control={form.control}

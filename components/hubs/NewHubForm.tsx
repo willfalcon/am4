@@ -8,12 +8,17 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import HubForm from './HubForm';
 
-export default function NewHubForm() {
+export default function NewHubForm({event = false}: {event: boolean}) {
   const { toast } = useToast();
+
+  console.log(getDefaults(HubSchema));
 
   const form = useForm<HubFormData>({
     resolver: zodResolver(HubSchema),
-    defaultValues: getDefaults(HubSchema),
+    defaultValues: {
+      ...getDefaults(HubSchema),
+      eventHub: event
+    },
   });
 
   async function onSubmit(data: HubFormData) {

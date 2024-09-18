@@ -3,28 +3,29 @@ import { Row } from "@tanstack/react-table";
 import { MoreHorizontal } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 
-import { toast } from '@/hooks/use-toast';
+import { useToast } from '@/hooks/use-toast';
 
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { Route } from '@prisma/client';
-import { deleteRoute, editRoute } from '@/app/routes/actions';
-import RouteForm from './RouteForm';
-import { RouteFormData, RouteSchema } from './routeSchema';
+import { EventFormData, EventSchema } from './eventSchema';
+import EventForm from './EventForm';
+import { deleteEvent, editEvent } from '@/app/events/actions';
+import { useState } from 'react';
 
 
 export default function ActionCell(row: Row<Route>) {
   const route = row.original;
-  
-  const form = useForm<RouteFormData>({
-    resolver: zodResolver(RouteSchema),
-    defaultValues: route as unknown as RouteFormData
+  const {toast} = useToast();
+  const form = useForm<EventFormData>({
+    resolver: zodResolver(EventSchema),
+    defaultValues: route as unknown as EventFormData
   });
 
-  async function onSubmit(data: RouteFormData) {
+  async function onSubmit(data: EventFormData) {
     try {
-      const res = await editRoute(route.id, data);
+      const res = await editEvent(route.id, data);
       toast({title: 'Route Saved.'})
       console.log(res);
     } catch (err) {
@@ -33,8 +34,10 @@ export default function ActionCell(row: Row<Route>) {
     }
   }
 
+  const [open, setOpen] = useState(false);
+
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant="ghost" className="h-8 w-8 p-0">
           <span className="sr-only">Open Menu</span>
@@ -45,7 +48,7 @@ export default function ActionCell(row: Row<Route>) {
         <DialogHeader>
           <DialogTitle>Edit {route.name}</DialogTitle>
         </DialogHeader>
-        <RouteForm form={form} onSubmit={onSubmit} submit="Save" />
+        <EventForm form={form} onSubmit={onSubmit} submit="Save" />
         <AlertDialog>
           <AlertDialogTrigger>Delete</AlertDialogTrigger>
           <AlertDialogContent>
@@ -54,7 +57,18 @@ export default function ActionCell(row: Row<Route>) {
             </AlertDialogHeader>
             <AlertDialogFooter>
               <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <AlertDialogAction onClick={() => deleteRoute(route.id)}>Continue</AlertDialogAction>
+              <AlertDialogAction onClick={async () => {
+                try {
+                  await deleteEvent(route.id)
+                  setOpen(false);
+                } catch(err) {
+                  console.error(err);
+                  toast({
+                    variant:'destructive',
+                    title: 'Something went wrong'
+                  });
+                }
+                }}>Continue</AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>

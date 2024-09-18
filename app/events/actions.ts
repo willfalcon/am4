@@ -1,14 +1,13 @@
 'use server';
 
 import { auth } from "@/auth";
-import { RouteFormData, RouteSchema } from "@/lib/zodSchemas";
+import { EventFormData, EventSchema } from "@/components/events/eventSchema";
 import { prisma } from "@/prisma";
-import { routesTag } from "./cache";
 import { revalidateTag } from "next/cache";
+import { eventsTag } from "./cache";
 import { Route } from "@prisma/client";
 
-export async function createRoute(data: RouteFormData, tag: string) {
-
+export async function createEvent(data: EventFormData) {
   const session = await auth();
   if (!session?.user) {
     return {
@@ -17,13 +16,13 @@ export async function createRoute(data: RouteFormData, tag: string) {
     };
   }
 
-  const validatedData = RouteSchema.parse(data);
+  const validatedData = EventSchema.parse(data);
 
   try {
     const route = await prisma.route.create({
       data: {
         ...validatedData,
-        event: !!validatedData.event,
+        event: true,
         user: {
           connect: {
             id: session.user.id,
@@ -36,13 +35,13 @@ export async function createRoute(data: RouteFormData, tag: string) {
         },
         destination: {
           connect: {
-            id: validatedData.destination.id
-          }
-        }
+            id: validatedData.destination.id,
+          },
+        },
       },
     });
 
-    revalidateTag(tag);
+    revalidateTag(eventsTag);
     return {
       success: true,
       route,
@@ -57,7 +56,8 @@ export async function createRoute(data: RouteFormData, tag: string) {
 }
 
 
-export async function editRoute(id: Route['id'], data: RouteFormData) {
+
+export async function editEvent(id: Route['id'], data: EventFormData) {
   const session = await auth();
   if (!session?.user) {
     return {
@@ -66,7 +66,7 @@ export async function editRoute(id: Route['id'], data: RouteFormData) {
     };
   }
 
-  const validatedData = RouteSchema.parse(data);
+  const validatedData = EventSchema.parse(data);
 
   try {
     const route = await prisma.route.update({
@@ -92,7 +92,7 @@ export async function editRoute(id: Route['id'], data: RouteFormData) {
         },
       },
     });
-    revalidateTag(routesTag);
+    revalidateTag(eventsTag);
     return {
       success: true,
       error: null,
@@ -107,8 +107,7 @@ export async function editRoute(id: Route['id'], data: RouteFormData) {
   }
 }
 
-
-export async function deleteRoute(id: Route['id']) {
+export async function deleteEvent(id: Route['id']) {
   const session = await auth();
   if (!session?.user) {
     return {
@@ -128,6 +127,11 @@ export async function deleteRoute(id: Route['id']) {
         },
       },
     });
+    revalidateTag(eventsTag);
+    return {
+      success: true,
+      error: null
+    }
   } catch (err) {
     console.error(err);
     return {

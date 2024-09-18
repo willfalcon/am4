@@ -10,7 +10,7 @@ export function getDefaults<Schema extends z.AnyZodObject>(schema: Schema) {
 }
 
 
-const numberOrString = z.preprocess(
+export const numberOrString = z.preprocess(
   val => {
     // If the value is a string, return it trimmed, otherwise return the value as is
     if (typeof val === 'string') {
@@ -96,29 +96,6 @@ export const PlaneSchema = z.object({
 
 export type PlaneFormData = z.infer<typeof PlaneSchema>;
 
-export const RouteSchema = z.object({
-  name: z.string().min(1).default(''),
-  hub: z.object({
-    id: z.string(),
-    name: z.string(),
-  }),
-  destination: z.object({
-    id: z.string(),
-    code: z.string(),
-    name: z.string(),
-    country: z.string(),
-    city: z.string(),
-    runway: z.number(),
-    market: z.number()
-  }),
-  distance: numberOrString.default(''),
-  yDemand: numberOrString.default(''),
-  jDemand: numberOrString.default(''),
-  fDemand: numberOrString.default(''),
-});
-
-export type RouteFormData = z.infer<typeof RouteSchema>;
-
 export const HubSchema = z.object({
   name: z.string().min(1).default(''),
   airport: z.object({
@@ -126,6 +103,7 @@ export const HubSchema = z.object({
     code: z.string(),
     name: z.string()
   }),
+  eventHub: z.boolean().default(false).optional()
 });
 
 export type HubFormData = z.infer<typeof HubSchema>;

@@ -1,10 +1,14 @@
 'use client';
  
 import { Button } from "@/components/ui/button";
-import { Model, Plane, Route } from "@prisma/client";
+import { Model, Plane, Prisma, Route } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown } from "lucide-react";
-import PlaneActionCell from "./PlaneActionCell";
+import { ArrowUpDown, Check, MoreHorizontal } from "lucide-react";
+import PlaneDialog from "./PlaneDialog";
+import { Dialog, DialogTrigger } from "../ui/dialog";
+import { PlaneWithRefs } from "@/lib/types";
+import { useCallback, useState } from "react";
+import { planeStatusText } from "../events/eventColumns";
 
 export const planeColumns: ColumnDef<Plane>[] = [
   {
@@ -31,6 +35,36 @@ export const planeColumns: ColumnDef<Plane>[] = [
     cell: ({ row }) => {
       const model: Model = row.getValue('model');
       return model.name;
+    },
+  },
+  {
+    accessorKey: 'status',
+    header: ({ column }) => {
+      return (
+        <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+          Event Plane
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+    cell: ({ row }) => {
+      const status: string = row.getValue('status');
+      return planeStatusText(status);
+    },
+  },
+  {
+    accessorKey: 'eventPlane',
+    header: ({ column }) => {
+      return (
+        <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+          Event Plane
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+    cell: ({ row }) => {
+      const eventPlane = row.getValue('eventPlane');
+      return eventPlane && <Check className="mx-auto" />;
     },
   },
   {
@@ -83,6 +117,22 @@ export const planeColumns: ColumnDef<Plane>[] = [
   },
   {
     id: 'actions',
-    cell: ({ row }) => <PlaneActionCell {...row} />,
+    cell: ({ row }) => {
+      const plane = row.original as PlaneWithRefs;
+
+      const [open, setOpen] = useState(false);
+
+      return (
+        <Dialog open={open} onOpenChange={setOpen}>
+          <DialogTrigger asChild>
+            <Button variant="ghost" className="h-8 w-8 p-0">
+              <span className="sr-only">Open Menu</span>
+              <MoreHorizontal className="h-4 w-4" />
+            </Button>
+          </DialogTrigger>
+          <PlaneDialog plane={plane} setOpen={setOpen} />
+        </Dialog>
+      );
+    },
   },
 ];

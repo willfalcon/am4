@@ -14,21 +14,18 @@ import { createRoute } from '@/app/routes/actions';
 
 type Props = {
   event?: boolean;
-  tag: string
 }
-export default function NewRouteForm({event = false, tag}: Props) {
+export default function NewRouteForm({event = false}: Props) {
   const form = useForm<RouteFormData>({
     resolver: zodResolver(RouteSchema),
     defaultValues: getDefaults(RouteSchema)
   });
 
-  console.log(form.formState.errors)
-  console.log(form.getValues()) 
   async function onSubmit(data: RouteFormData) {
     console.log('submit')
     try {
   
-      const res = await createRoute({...data, event}, tag);
+      const res = await createRoute({...data, event});
       console.log(res)
       toast({title: 'Route added.'})
       form.reset();

@@ -79,23 +79,6 @@ export const ModelSchema = z.object({
 
 export type ModelFormData = z.infer<typeof ModelSchema>; 
 
-export const PlaneSchema = z.object({
-  name: z.string().min(1).default(''),
-  model: z.object({
-    id: z.string(),
-    name: z.string(),
-  }),
-  route: z.object({
-    id: z.string(),
-    name: z.string(),
-  }),
-  y: numberOrString.default(''),
-  j: numberOrString.default(''),
-  f: numberOrString.default(''),
-})
-
-export type PlaneFormData = z.infer<typeof PlaneSchema>;
-
 export const HubSchema = z.object({
   name: z.string().min(1).default(''),
   airport: z.object({

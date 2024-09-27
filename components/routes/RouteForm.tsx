@@ -10,7 +10,7 @@ type Props = {
   form: UseFormReturn<RouteFormData>;
   onSubmit: (data: RouteFormData) => Promise<void>;
   submit: string;
-  event: boolean;
+  event?: boolean;
 };
 
 export default function RouteForm({ form, onSubmit, submit }: Props) {

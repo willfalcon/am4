@@ -11,19 +11,22 @@ import TextInput from '@/components/forms/TextInput';
 
 import MakeField from './MakeField';
 import LineField from './LineField';
+import { useManufacturersContext } from '../providers/ManufacturersContext';
 
 
 type Props = {
   form: UseFormReturn<ModelFormData>;
   onSubmit: (data: ModelFormData) => Promise<void>;
   submit: string;
-  manufacturers: Manufacturer[]
 };
 
-export default function ModelForm({ form, onSubmit, submit, manufacturers }: Props) {
+export default function ModelForm({ form, onSubmit, submit }: Props) {
   const defaultLines = form.getValues('make')?.lines || [];
   
   const [lines, setLines] = useState<string[]>(defaultLines);
+
+  const {manufacturers} = useManufacturersContext();
+  
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2 grid grid-cols-[150px_1fr]">

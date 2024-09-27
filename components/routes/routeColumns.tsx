@@ -35,6 +35,9 @@ export const routeColumns: ColumnDef<Route>[] = [
       const hub: Hub = row.getValue('hub');
       return hub.name;
     },
+    filterFn: (row, id, value) => {
+      return value.includes(row.getValue('hub'))
+    }
   },
   {
     accessorKey: 'destination',

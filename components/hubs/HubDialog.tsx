@@ -20,8 +20,7 @@ import { HubFormData, HubSchema } from '@/lib/zodSchemas';
 import { deleteHub, editHub } from '@/app/hubs/actions';
 import HubForm from './HubForm';
 
-export default function HubActionCell(row: Row<Hub>) {
-  const hub = row.original;
+export default function HubDialog(hub: Hub) {
 
   const { toast } = useToast();
 
@@ -42,13 +41,7 @@ export default function HubActionCell(row: Row<Hub>) {
   }
 
   return (
-    <Dialog>
-      <DialogTrigger asChild>
-        <Button variant="ghost" className="h-8 w-8 p-0">
-          <span className="sr-only">Open Menu</span>
-          <MoreHorizontal className="h-4 w-4" />
-        </Button>
-      </DialogTrigger>
+    
       <DialogContent className="max-h-[calc(100vh-32px)] overflow-auto">
         <DialogHeader>
           <DialogTitle>Edit {hub.name}</DialogTitle>
@@ -90,6 +83,5 @@ export default function HubActionCell(row: Row<Hub>) {
           </AlertDialogContent>
         </AlertDialog>
       </DialogContent>
-    </Dialog>
   );
 }

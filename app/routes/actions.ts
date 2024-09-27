@@ -1,13 +1,13 @@
 'use server';
 
 import { auth } from "@/auth";
-import { RouteFormData, RouteSchema } from "@/lib/zodSchemas";
 import { prisma } from "@/prisma";
 import { routesTag } from "./cache";
 import { revalidateTag } from "next/cache";
 import { Route } from "@prisma/client";
+import { RouteFormData, RouteSchema } from "@/components/routes/routeSchema";
 
-export async function createRoute(data: RouteFormData, tag: string) {
+export async function createRoute(data: RouteFormData) {
 
   const session = await auth();
   if (!session?.user) {
@@ -42,7 +42,7 @@ export async function createRoute(data: RouteFormData, tag: string) {
       },
     });
 
-    revalidateTag(tag);
+    revalidateTag(routesTag);
     return {
       success: true,
       route,

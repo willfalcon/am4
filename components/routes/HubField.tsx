@@ -6,11 +6,11 @@ import { cn } from '@/lib/utils';
 import { Check, ChevronsUpDown } from 'lucide-react';
 import { useState } from 'react';
 import { useFormContext } from 'react-hook-form';
-import { useRoutesContext } from './RoutesContextProvider';
+import { useHubsContext } from '../providers/HubsContext';
 
 export default function HubField({ }) {
 
-  const { hubs } = useRoutesContext();
+  const { hubs } = useHubsContext();
   const form = useFormContext();
 
   const [open, setOpen] = useState(false);

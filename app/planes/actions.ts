@@ -1,13 +1,15 @@
 'use server';
 
 import { auth } from "@/auth";
-import { PlaneFormData, PlaneSchema } from "@/lib/zodSchemas";
+
 import { prisma } from "@/prisma";
 import { Plane, Prisma } from "@prisma/client";
 import { planesTag } from "./cache";
 import { revalidateTag } from "next/cache";
+import { PlaneFormData, PlaneSchema } from "@/components/planes/planeSchema";
 
 type CreatePlaneInput = Prisma.PlaneCreateInput;
+type UpdatePlaneInput = Prisma.PlaneUpdateInput;
 
 export async function createPlane(data: PlaneFormData) {
   const session = await auth();
@@ -19,7 +21,7 @@ export async function createPlane(data: PlaneFormData) {
   }
 
   const validatedData = PlaneSchema.parse(data);
-
+  const {model, route} = validatedData;
   try {
     const newPlane = await prisma.plane.create({
       data: {
@@ -31,14 +33,16 @@ export async function createPlane(data: PlaneFormData) {
         },
         model: {
           connect: {
-            id: validatedData.model?.id,
-          },
-          route: {
-            connect: {
-              id: validatedData.route.id,
-            },
+            id: model.id,
           },
         },
+        ...(route && {
+          route: {
+            connect: {
+              id: route.id,
+            },
+          },
+        }),
       } as CreatePlaneInput,
     });
 
@@ -71,6 +75,8 @@ export async function editPlane(id: Plane['id'], data: PlaneFormData) {
 
   const validatedData = PlaneSchema.parse(data);
 
+  const {model, route, ...restData} = validatedData;
+
   try {
 
     const plane = await prisma.plane.update({
@@ -83,18 +89,12 @@ export async function editPlane(id: Plane['id'], data: PlaneFormData) {
         },
       },
       data: {
-        ...validatedData,
+        ...restData,
         model: {
-          connect: {
-            id: validatedData.model.id
-          }
+          connect: { id: model.id },
         },
-        route: {
-          connect: {
-            id: validatedData.route.id
-          }
-        }
-      },
+        ...(route ? { route: { connect: { id: route.id } } } : { route: { disconnect: true } }),
+      } as UpdatePlaneInput,
     });
     revalidateTag(planesTag);
     return {

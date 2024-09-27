@@ -3,8 +3,10 @@
 import { Button } from '@/components/ui/button';
 import { Hub } from '@prisma/client';
 import { ColumnDef } from '@tanstack/react-table';
-import { ArrowUpDown, Check } from 'lucide-react';
-import HubActionCell from './HubsActionCell';
+import { ArrowUpDown, Check, MoreHorizontal } from 'lucide-react';
+
+import { Dialog, DialogTrigger } from '../ui/dialog';
+import HubDialog from './HubDialog';
 
 export const hubsColumns: ColumnDef<Hub>[] = [
   {
@@ -45,12 +47,25 @@ export const hubsColumns: ColumnDef<Hub>[] = [
     },
     cell: ({ row }) => {
       const eventHub = row.getValue('eventHub');
-      console.log(eventHub);
       return eventHub && <Check />;
     },
   },
   {
     id: 'actions',
-    cell: ({ row }) => <HubActionCell {...row} />,
+    cell: ({ row }) => {
+      const hub: Hub = row.getValue('hub');
+    
+    return (
+      <Dialog>
+        <DialogTrigger asChild>
+          <Button variant="ghost" className="h-8 w-8 p-0">
+            <span className="sr-only">Open Menu</span>
+            <MoreHorizontal className="h-4 w-4" />
+          </Button>
+        </DialogTrigger>
+        <HubDialog {...hub} />
+      </Dialog>
+      )
+    },
   },
 ];

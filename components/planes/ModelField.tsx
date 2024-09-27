@@ -7,14 +7,13 @@ import { Model } from "@prisma/client";
 import { Check } from "lucide-react";
 import { useState } from "react";
 import { useFormContext } from "react-hook-form";
+import { useModelsContext } from "../providers/ModelsContext";
 
-type Props = {
-  models: Model[];
-};
 
-export default function ModelField({ models }: Props) {
+export default function ModelField() {
 
   const form = useFormContext();
+  const { models } = useModelsContext();
 
   const [open, setOpen] = useState(false);
 
@@ -23,7 +22,7 @@ export default function ModelField({ models }: Props) {
       control={form.control}
       name="model"
       render={({ field }) => (
-        <FormItem className="grid grid-cols-[150px_1fr] items-center gap-x-2 col-span-2">
+        <FormItem className="space-y-0 grid grid-cols-[150px_1fr] items-center gap-x-2 col-span-2">
           <FormLabel className="text-right">Model</FormLabel>
           <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger asChild>

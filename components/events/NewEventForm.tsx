@@ -18,8 +18,6 @@ export default function NewEventForm() {
     defaultValues: getDefaults(EventSchema),
   });
 
-  console.log(form.formState.errors);
-  console.log(form.getValues());
   async function onSubmit(data: EventFormData) {
     console.log('submit');
     try {

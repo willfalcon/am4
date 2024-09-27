@@ -1,23 +1,26 @@
 'use client';
 
-import { ColumnDef, ColumnFiltersState, flexRender, getCoreRowModel, getFilteredRowModel, getSortedRowModel, SortingState, useReactTable, VisibilityState } from '@tanstack/react-table';
 
+import { ColumnDef, ColumnFiltersState, flexRender, getCoreRowModel, getFilteredRowModel, getSortedRowModel, SortingState, useReactTable, VisibilityState } from '@tanstack/react-table';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { useState } from 'react';
 import { Input } from './ui/input';
 import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger } from './ui/dropdown-menu';
 import { Button } from './ui/button';
 
+import {useLocalStorage} from 'usehooks-ts';
+
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  key: string;
 }
 
-export default function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData, TValue>) {
+export default function DataTable<TData, TValue>({ columns, data, key }: DataTableProps<TData, TValue>) {
   
-  const [sorting, setSorting] = useState<SortingState>([]);
+  const [sorting, setSorting] = useLocalStorage<SortingState>(`${key}TableSorting`, [], { initializeWithValue: false});
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+  const [columnVisibility, setColumnVisibility] = useLocalStorage<VisibilityState>(`${key}ColumnVisibility`, {}, {initializeWithValue: false});
   const [rowSelection, setRowSelection] = useState({});
 
   const table = useReactTable({

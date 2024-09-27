@@ -6,10 +6,9 @@ import { cn } from '@/lib/utils';
 import { Check } from 'lucide-react';
 import { useState } from 'react';
 import { useFormContext } from 'react-hook-form';
-import { useHubsContext } from './HubsContextProvider';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '../ui/dialog';
 import NewAirportForm from '../airports/NewAirportForm';
-import { useAirportsContext } from '../airports/AirportsProvider';
+import { useAirportsContext } from '../providers/AirportsContext';
 
 export default function AirportField() {
   const form = useFormContext();

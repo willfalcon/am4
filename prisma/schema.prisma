@@ -115,11 +115,20 @@ model Manufacturer {
   lines      String[]
 }
 
+enum PlaneStatus {
+  routed
+  groundedToHub
+  groundedToEvent
+  pending
+  maintenance
+}
+
 model Plane {
   id              String   @id @default(cuid())
   name            String
-  modelId         String?
-  model           Model?    @relation(fields: [modelId], references: [id])
+  modelId         String
+  model           Model    @relation(fields: [modelId], references: [id])
+  eventPlane      Boolean?
   routeId         String?
   route           Route?    @relation(fields: [routeId], references: [id])
   correctedSplits Boolean?
@@ -129,6 +138,7 @@ model Plane {
   yPrice          Int?
   jPrice          Int?
   fPrice          Int?
+  status          PlaneStatus @default(pending)
   userId          String
   user            User @relation(fields: [userId], references: [id])
   createdAt       DateTime @default(now())
@@ -181,6 +191,7 @@ model Route {
   user          User        @relation(fields: [userId], references: [id])
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
+  research      Boolean?
 }
 
 model CompModel {

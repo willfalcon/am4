@@ -6,13 +6,13 @@ import { cn } from '@/lib/utils';
 import { Check } from 'lucide-react';
 import { useState } from 'react';
 import { useFormContext } from 'react-hook-form';
-import { useRoutesContext } from './RoutesContextProvider';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '../ui/dialog';
 import NewAirportForm from '../airports/NewAirportForm';
+import { useAirportsContext } from '../providers/AirportsContext';
 
 export default function ModelField({ }) {
 
-  const { airports } = useRoutesContext();
+  const { airports } = useAirportsContext();
   const form = useFormContext();
 
   const [open, setOpen] = useState(false);

@@ -2,19 +2,28 @@
 
 import Heading from "@/components/Heading";
 import { useToast } from "@/hooks/use-toast";
-import { getDefaults, PlaneFormData, PlaneSchema } from "@/lib/zodSchemas";
+import { getDefaults, } from "@/lib/zodSchemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import PlaneForm from "./PlaneForm";
 import { createPlane } from "@/app/planes/actions";
+import { PlaneFormData, PlaneSchema } from "./planeSchema";
+import { Model } from "@prisma/client";
 
-export default function NewPlaneForm() {
+export default function NewPlaneForm({model}: {model?: Model}) {
   
   const { toast } = useToast();
 
   const form = useForm<PlaneFormData>({
     resolver: zodResolver(PlaneSchema),
-    defaultValues: getDefaults(PlaneSchema)
+    defaultValues: {
+      ...getDefaults(PlaneSchema),
+      ...(model && (
+        {
+          model
+        }
+      ))
+    }
   });
   
   async function onSubmit(data: PlaneFormData) {
@@ -23,8 +32,12 @@ export default function NewPlaneForm() {
     try {
       const planeRes = await createPlane(data);
       console.log(planeRes);
-      toast({title: 'Plane added.'})
-      form.reset();
+      if (planeRes.success) {
+        toast({title: 'Plane added.'})
+        form.reset();
+      } else {
+        toast({variant: 'destructive', title: planeRes.error});
+      }
     } catch (err) {
       console.error(err);
       toast({variant: 'destructive', title:'Something went wrong'});

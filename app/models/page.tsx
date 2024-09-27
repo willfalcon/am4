@@ -4,12 +4,14 @@ import { auth } from '@/auth';
 import { getManufacturers, getModels } from '@/lib/queries';
 
 import Title from '@/components/Title';
-import Heading from '@/components/Heading';
-import ModelsContextProvider from '../../components/models/ModelsContextProvider';
-import { columns } from '@/components/models/columns';
+
+
 import NewModelForm from '@/components/models/NewModelForm';
 
 import DataTable from '@/components/DataTable';
+import { modelColumns } from '@/components/models/modelColumns';
+
+import ManufacturersProvider from '@/components/providers/ManufacturersContext';
 
 export default async function Models() {
   const session = await auth();
@@ -24,10 +26,10 @@ export default async function Models() {
   return (
     <div className="container mx-auto max-w-full py-10">
       <Title>Models</Title>
-        <ModelsContextProvider manufacturers={manufacturers}>
-          <DataTable columns={columns} data={models} />
-          <NewModelForm manufacturers={manufacturers} />
-        </ModelsContextProvider>
+        <ManufacturersProvider manufacturers={manufacturers}>
+          <DataTable columns={modelColumns} data={models} key="models" />
+          <NewModelForm />
+        </ManufacturersProvider>
     </div>
   );
 }

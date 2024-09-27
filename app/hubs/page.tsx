@@ -27,7 +27,7 @@ export default async function Hubs() {
       <Title>Hubs</Title>
       <HubsContextProvider airports={airports}>
         <CountriesProvider countries={countries}>
-          <DataTable columns={hubsColumns} data={hubsRes.hubs} />
+          <DataTable columns={hubsColumns} data={hubsRes.hubs} key="hubs" />
           <NewHubForm />
         </CountriesProvider>
       </HubsContextProvider>

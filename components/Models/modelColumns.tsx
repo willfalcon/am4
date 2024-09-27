@@ -1,13 +1,15 @@
 'use client';
 
 import { ColumnDef } from '@tanstack/react-table';
-import { Model} from '@prisma/client';
+import { Manufacturer, Model} from '@prisma/client';
 import { ArrowUpDown, Check } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
 
 import { Button } from '@/components/ui/button';
 import ActionCell from './ActionCell';
+import { Dialog, DialogTrigger } from '../ui/dialog';
+import ModelTableMake from './ModelTableMake';
 
 
 function getCurrency(float: string) {
@@ -19,7 +21,7 @@ function getCurrency(float: string) {
 }
 
 
-export const columns: ColumnDef<Model>[] = [
+export const modelColumns: ColumnDef<Model>[] = [
   {
     accessorKey: 'name',
     header: ({ column }) => {
@@ -42,8 +44,10 @@ export const columns: ColumnDef<Model>[] = [
       );
     },
     cell: ({row}) => {
-      const make: {name: string} = row.getValue('make');
-      return make.name;
+      const make: Manufacturer = row.getValue('make');
+      return (
+        <ModelTableMake {...make} />
+      )
     }
   },
   {

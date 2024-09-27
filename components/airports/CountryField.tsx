@@ -11,14 +11,16 @@ import { useState } from "react";
 export default function CountryField() {
   const form = useFormContext();
   const {countries} = useCountriesContext();
-
+  
   const [open, setOpen] = useState(false);
 
   return (
     <FormField
       control={form.control}
       name="country"
-      render={({ field }) => (
+      render={({ field }) => {
+        console.log(field)
+        return (
         <FormItem className="grid grid-cols-[150px_1fr] items-center gap-x-2 col-span-2">
           <FormLabel className="text-right">Country</FormLabel>
           <Popover open={open} onOpenChange={setOpen}>
@@ -65,7 +67,7 @@ export default function CountryField() {
           </Popover>
           <FormMessage />
         </FormItem>
-      )}
+      )}}
     />
   );
 }

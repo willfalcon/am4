@@ -36,7 +36,7 @@ export default async function MainNav() {
             <NavigationMenuLink href="/routes" className={cn(navigationMenuTriggerStyle(), 'w-full justify-start')}>Routes</NavigationMenuLink>
           </NavigationMenuItem>
           <NavigationMenuItem>
-            <NavigationMenuLink href="/hubs" className={cn(navigationMenuTriggerStyle(), 'w-full justify-start')}>Hub</NavigationMenuLink>
+            <NavigationMenuLink href="/hubs" className={cn(navigationMenuTriggerStyle(), 'w-full justify-start')}>Hubs</NavigationMenuLink>
           </NavigationMenuItem>
           <NavigationMenuItem>
             <NavigationMenuLink href="/events" className={cn(navigationMenuTriggerStyle(), 'w-full justify-start')}>Events</NavigationMenuLink>

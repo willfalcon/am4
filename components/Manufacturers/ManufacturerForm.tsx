@@ -32,7 +32,7 @@ export default function ManufacturerForm({form, onSubmit, fieldArray, submit}: P
               <FormItem className="space-y-0 grid grid-cols-[150px_1fr] items-center gap-x-2 col-span-2">
                 <FormLabel className={cn(index !== 0 && 'sr-only', 'text-right')}>Lines</FormLabel>
                 <FormControl>
-                  <Input {...field} />
+                  <Input {...field} className="col-start-2"/>
                 </FormControl>
                 <FormMessage />
               </FormItem>
